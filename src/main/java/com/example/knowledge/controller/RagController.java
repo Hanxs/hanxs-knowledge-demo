@@ -1,60 +1,75 @@
 package com.example.knowledge.controller;
 
-import com.example.knowledge.rag.KnowledgeBaseLoader;
-import jakarta.annotation.Resource;
+import com.example.knowledge.common.ApiResponse;
+import com.example.knowledge.conf.RagProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
+/**
+ * RAG 问答接口：普通（阻塞式）与流式两种返回方式。
+ */
 @RestController
 @RequestMapping("/rag")
+@RequiredArgsConstructor
 public class RagController {
 
-    @Resource
-    private ChatClient chatClient;
+    public static final String DEFAULT_SESSION_ID = "default-001";
 
-    @Resource
-    private KnowledgeBaseLoader knowledgeBaseLoader;
-
-    @Resource
-    private VectorStore vectorStore;
+    private final ChatClient chatClient;
+    private final VectorStore vectorStore;
+    private final RagProperties props;
 
     /**
-     * 加载 PDF 知识库
-     * 访问：http://localhost:8080/rag/loadPdf
-     */
-    @GetMapping("/loadPdf")
-    public String loadPdfKnowledgeBase() {
-        knowledgeBaseLoader.loadPdfToVectorStore();
-        return "PDF知识库加载成功";
-    }
-
-    /**
-     * 加载 TXT 知识库
-     * 访问：http://localhost:8080/rag/loadTxt
-     */
-    @GetMapping("/loadTxt")
-    public String loadTxtKnowledgeBase() {
-        knowledgeBaseLoader.loadTxtToVectorStore();
-        return "TXT知识库加载成功";
-    }
-
-    /**
-     * 标准RAG智能问答接口
-     * 访问：http://localhost:8080/rag/ask?msg=你的问题
+     * 标准 RAG 问答：/rag/ask?msg=你的问题&sessionId=可选会话ID
      */
     @GetMapping("/ask")
-    public String ask(@RequestParam String msg) {
-        return chatClient.prompt()
-                .user("简单介绍下" + msg)
-                .advisors(QuestionAnswerAdvisor.builder(vectorStore).build())
-                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, "default-001"))
+    public ApiResponse<String> ask(@RequestParam String msg,
+                                   @RequestParam(required = false) String sessionId) {
+        String answer = chatClient.prompt()
+                .user(msg)
+                .advisors(qaAdvisor())
+                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, resolveSession(sessionId)))
                 .call()
                 .content();
+        return ApiResponse.ok(answer);
+    }
+
+    /**
+     * 流式 RAG 问答（SSE）：/rag/ask/stream?msg=你的问题&sessionId=可选会话ID
+     */
+    @GetMapping(value = "/ask/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> askStream(@RequestParam String msg,
+                                  @RequestParam(required = false) String sessionId) {
+        return chatClient.prompt()
+                .user(msg)
+                .advisors(qaAdvisor())
+                .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, resolveSession(sessionId)))
+                .stream()
+                .content();
+    }
+
+    private QuestionAnswerAdvisor qaAdvisor() {
+        SearchRequest searchRequest = SearchRequest.builder()
+                .topK(props.getTopK())
+                .similarityThreshold(props.getSimilarityThreshold())
+                .build();
+        return QuestionAnswerAdvisor.builder(vectorStore)
+                .searchRequest(searchRequest)
+                .build();
+    }
+
+    private String resolveSession(String sessionId) {
+        return StringUtils.hasText(sessionId) ? sessionId : DEFAULT_SESSION_ID;
     }
 }

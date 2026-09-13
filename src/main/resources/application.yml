@@ -1,16 +1,70 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
     name: hanxs-knowledge-demo
+  profiles:
+    # local 为"本地私人覆盖"profile：若存在 application-local.yml（已 gitignore）则自动生效，
+    # 不存在也不影响启动。这样配置密钥无需设置任何环境变量。
+    active: ${SPRING_PROFILES_ACTIVE:dev,local}
   ai:
     openai:
-      api-key: sk-f8f8f1d1af734dd7916c94cd112fc832
-      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      # 密钥通过环境变量注入，切勿再明文写入仓库
+      api-key: ${DASHSCOPE_API_KEY:}
+      base-url: ${DASHSCOPE_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
       chat:
         options:
-          model: qwen-plus
+          model: ${CHAT_MODEL:qwen-plus}
+          temperature: 0.3
       embedding:
         options:
-          model: text-embedding-v3
+          model: ${EMBEDDING_MODEL:text-embedding-v3}
+
+app:
+  rag:
+    # 管理接口令牌：为空表示开发模式（不鉴权）；生产环境务必配置
+    auth-token: ${RAG_ADMIN_TOKEN:}
+    # 应用启动时自动加载知识库
+    load-on-startup: true
+    # 检索参数调优
+    top-k: 4
+    similarity-threshold: 0.5
+    # 对话记忆窗口大小
+    max-messages: 10
+    # 向量库 / 对话记忆持久化文件
+    vector-store-path: ${VECTOR_STORE_PATH:./data/vector-store.json}
+    chat-memory-path: ${CHAT_MEMORY_PATH:./data/chat-memory.json}
+    # 系统提示词
+    system-prompt: |
+      你是一名企业知识库助手。请严格依据检索到的知识片段回答问题；
+      若知识片段中没有相关信息，请如实回复"知识库中未找到相关内容"，不要编造。
+      回答使用简体中文，条理清晰。
+    # 文本切分参数（针对中文优化）
+    splitter:
+      chunk-size: 800
+      min-chunk-size-chars: 350
+      min-chunk-length-to-embed: 5
+      max-num-chunks: 10000
+      keep-separator: true
+    # 知识文档清单：按扩展名自动选择解析器
+    documents:
+      - classpath:doc/knowledge.txt
+      - classpath:doc/公司考勤制度.pdf
+    # 知识文档目录：该目录下的文件会被自动发现并加载，
+    # 页面上传的文档也保存在这里 —— 新增知识只需上传，无需改配置或重启
+    doc-dir: ${DOC_DIR:./data/docs}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.example.knowledge: DEBUG

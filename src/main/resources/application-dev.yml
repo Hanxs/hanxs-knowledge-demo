@@ -1,0 +1,20 @@
+# 开发环境：开启全部管理端点与接口文档，日志更详细
+app:
+  error:
+    # 异常时把真实错误信息透出到响应中，便于排查（生产环境保持关闭）
+    show-detail: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+logging:
+  level:
+    org.springframework.ai: INFO

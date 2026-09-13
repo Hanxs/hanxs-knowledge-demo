@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>企业知识中枢 · Enterprise Knowledge Hub</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-plus@2/dist/index.css" />
+<style>
+  :root{
+    --navy-900:#0b1220;
+    --navy-800:#0f1a2e;
+    --navy-700:#16233c;
+    --page-bg:#f4f6fa;
+    --card-bd:#e8ecf3;
+    --text-1:#0f172a;
+    --text-2:#475569;
+    --text-3:#94a3b8;
+    --brand:#2563eb;
+    --brand-dk:#1d4ed8;
+    --ok:#10b981;
+    --warn:#f59e0b;
+    --err:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body,#app{height:100%}
+  body{
+    margin:0;
+    background:var(--page-bg);
+    color:var(--text-1);
+    font-family:"Inter","PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .el-menu{border-right:none !important}
+  .el-menu-item{height:46px;line-height:46px;border-radius:10px;margin:4px 10px;font-weight:500}
+  .el-menu-item.is-active{background:linear-gradient(90deg,rgba(37,99,235,.9),rgba(37,99,235,.55)) !important;box-shadow:0 6px 16px -6px rgba(37,99,235,.9)}
+  .el-menu-item:hover{background:rgba(255,255,255,.06) !important}
+  .el-menu-item.is-active:hover{background:linear-gradient(90deg,rgba(37,99,235,.95),rgba(37,99,235,.6)) !important}
+  .el-menu-item span{margin-left:2px}
+
+  /* ---------- Layout ---------- */
+  .layout{height:100%}
+  .aside{
+    background:linear-gradient(180deg,var(--navy-900) 0%,var(--navy-800) 55%,var(--navy-700) 100%);
+    overflow:hidden;display:flex;flex-direction:column;
+  }
+  .brand{
+    padding:22px 20px 18px;display:flex;align-items:center;gap:12px;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .brand-mark{
+    width:40px;height:40px;border-radius:11px;flex:none;
+    background:linear-gradient(135deg,#3b82f6,#6366f1);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    box-shadow:0 8px 18px -6px rgba(59,130,246,.9);
+  }
+  .brand-name{color:#fff;font-size:16px;font-weight:700;letter-spacing:.5px;line-height:1.2}
+  .brand-sub{color:#64748b;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;margin-top:3px}
+  .side-menu{flex:1;padding-top:10px;background:transparent !important}
+  .side-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+  .side-foot .who{color:#cbd5e1;font-size:12.5px;line-height:1.35}
+  .side-foot .who small{display:block;color:#64748b;font-size:11px}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+  }
+
+  .header{
+    background:#fff;border-bottom:1px solid var(--card-bd);
+    display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:62px;
+  }
+  .hd-left{display:flex;align-items:baseline;gap:12px}
+  .hd-title{font-size:17px;font-weight:700;letter-spacing:.3px}
+  .hd-sub{font-size:12.5px;color:var(--text-3)}
+  .hd-right{display:flex;align-items:center;gap:10px}
+
+  .main{padding:22px;overflow:auto}
+  .view{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ---------- Cards ---------- */
+  .card{
+    background:#fff;border:1px solid var(--card-bd);border-radius:14px;
+    box-shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px -18px rgba(16,24,40,.25);
+  }
+  .card-hd{padding:16px 18px;border-bottom:1px solid var(--card-bd);display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card-hd h3{margin:0;font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .card-hd .hint{font-size:12px;color:var(--text-3);font-weight:400}
+  .card-bd{padding:18px}
+
+  .stat{padding:18px;display:flex;align-items:center;gap:14px}
+  .stat-ic{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none;color:#fff}
+  .stat .num{font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+  .stat .lbl{font-size:12.5px;color:var(--text-3);margin-top:4px}
+  .stat .sub{font-size:11.5px;color:var(--text-3);margin-top:3px}
+
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed #eef1f6;font-size:13.5px}
+  .kv:last-child{border-bottom:none}
+  .kv .k{color:var(--text-3);flex:none}
+  .kv .v{color:var(--text-1);font-weight:600;text-align:right;word-break:break-all}
+
+  .doc-item{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:13px 14px;border:1px solid var(--card-bd);border-radius:11px;margin-bottom:10px;
+    transition:border-color .2s,box-shadow .2s;background:#fff;
+  }
+  .doc-item:hover{border-color:#c7d7fb;box-shadow:0 6px 18px -12px rgba(37,99,235,.7)}
+  .doc-name{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:9px}
+  .doc-meta{font-size:11.5px;color:var(--text-3);margin-top:4px}
+
+  /* ---------- Chat ---------- */
+  .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 62px - 44px)}
+  .chat-scroll{flex:1;overflow:auto;padding:22px 26px}
+  .msg{display:flex;gap:12px;margin-bottom:22px}
+  .msg.me{flex-direction:row-reverse}
+  .msg-av{width:36px;height:36px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .msg-av.ai{background:linear-gradient(135deg,#2563eb,#6366f1)}
+  .msg-av.me{background:linear-gradient(135deg,#0f172a,#334155)}
+  .msg-body{max-width:min(760px,74%)}
+  .msg.me .msg-body{text-align:right}
+  .bubble{
+    display:inline-block;text-align:left;padding:13px 16px;border-radius:14px;font-size:14px;line-height:1.72;
+    background:#fff;border:1px solid var(--card-bd);color:var(--text-1);
+    box-shadow:0 1px 2px rgba(16,24,40,.04);white-space:normal;word-break:break-word;
+  }
+  .msg.me .bubble{background:linear-gradient(135deg,#2563eb,#3b6fe8);color:#fff;border-color:transparent}
+  .bubble code{background:rgba(100,116,139,.16);padding:1px 6px;border-radius:5px;font-size:12.5px}
+  .msg.me .bubble code{background:rgba(255,255,255,.22)}
+  .bubble strong{font-weight:700}
+  .msg-time{font-size:11px;color:var(--text-3);margin-top:6px}
+  .msg.me .msg-time{text-align:right}
+
+  .typing{display:inline-flex;gap:5px;padding:5px 2px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#93a6c9;animation:bl 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}
+  .typing i:nth-child(3){animation-delay:.36s}
+  @keyframes bl{0%,60%,100%{opacity:.28;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  .refs{margin-top:10px;border-top:1px dashed var(--card-bd);padding-top:10px;text-align:left}
+  .refs-t{font-size:11.5px;color:var(--text-3);display:flex;align-items:center;gap:6px;margin-bottom:8px}
+  .ref{background:#f8fafc;border:1px solid var(--card-bd);border-radius:9px;padding:9px 11px;margin-bottom:7px}
+  .ref-h{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;margin-bottom:5px}
+  .ref-src{font-weight:700;color:var(--brand);display:flex;align-items:center;gap:5px}
+  .ref-txt{font-size:12.5px;color:var(--text-2);line-height:1.65}
+
+  .composer{border-top:1px solid var(--card-bd);padding:14px 22px 16px;background:#fff}
+  .composer-inner{display:flex;gap:10px;align-items:flex-end}
+  .composer textarea{border-radius:11px}
+  .composer-ops{display:flex;align-items:center;gap:16px;margin-top:11px;flex-wrap:wrap;font-size:12.5px;color:var(--text-3)}
+
+  .suggest{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+  .chip{
+    border:1px solid var(--card-bd);background:#fff;border-radius:999px;padding:7px 14px;font-size:12.5px;color:var(--text-2);
+    cursor:pointer;transition:.2s;
+  }
+  .chip:hover{border-color:#93b4fb;color:var(--brand);background:#f4f8ff}
+
+  .empty{text-align:center;padding:46px 20px;color:var(--text-3)}
+  .empty h4{margin:14px 0 6px;color:var(--text-1);font-size:15px}
+  .empty p{margin:0;font-size:13px}
+
+  .res{border:1px solid var(--card-bd);border-radius:12px;padding:14px 16px;margin-bottom:11px;background:#fff}
+  .res-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .res-t{font-size:12.5px;color:var(--text-2);line-height:1.7}
+  .rank{font-size:11px;color:var(--text-3);font-weight:700}
+
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .dot.ok{background:var(--ok);box-shadow:0 0 0 3px rgba(16,185,129,.18)}
+  .dot.err{background:var(--err);box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+  .dot.warn{background:var(--warn);box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+  .mono{font-family:"SFMono-Regular",Menlo,Consolas,monospace;font-size:12px}
+  .sec-title{font-size:13px;font-weight:700;color:var(--text-2);margin:0 0 12px}
+  .mb14{margin-bottom:14px}
+  .mb18{margin-bottom:18px}
+</style>
+</head>
+<body>
+<div id="app">
+  <el-container class="layout">
+    <!-- ============ Sidebar ============ -->
+    <el-aside width="232px" class="aside">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">企业知识中枢</div>
+          <div class="brand-sub">Knowledge Hub</div>
+        </div>
+      </div>
+
+      <el-menu class="side-menu" :default-active="activeMenu" @select="m => activeMenu = m"
+               background-color="transparent" text-color="#9fb0c9" active-text-color="#ffffff">
+        <el-menu-item index="dashboard">
+          <svg-icon name="grid" :size="17" />
+          <span>工作台</span>
+        </el-menu-item>
+        <el-menu-item index="chat">
+          <svg-icon name="chat" :size="17" />
+          <span>智能问答</span>
+        </el-menu-item>
+        <el-menu-item index="knowledge">
+          <svg-icon name="db" :size="17" />
+          <span>知识库管理</span>
+        </el-menu-item>
+        <el-menu-item index="search">
+          <svg-icon name="search" :size="17" />
+          <span>检索调试</span>
+        </el-menu-item>
+      </el-menu>
+
+      <div class="side-foot">
+        <div class="avatar">韩</div>
+        <div class="who">韩旭<small>知识运营 · 管理员</small></div>
+      </div>
+    </el-aside>
+
+    <el-container>
+      <!-- ============ Header ============ -->
+      <el-header class="header">
+        <div class="hd-left">
+          <span class="hd-title">{{ pageTitle }}</span>
+          <span class="hd-sub">{{ pageSub }}</span>
+        </div>
+        <div class="hd-right">
+          <el-tag size="small" effect="plain" :type="health.ok ? 'success' : 'danger'" round>
+            <span class="dot" :class="health.ok ? 'ok' : 'err'" style="margin-right:6px"></span>
+            {{ health.ok ? '服务在线' : '服务离线' }}
+          </el-tag>
+          <el-button size="small" @click="refreshAll" :loading="loading">
+            <svg-icon name="refresh" :size="14" style="margin-right:5px;vertical-align:-2px" />刷新
+          </el-button>
+          <el-button size="small" @click="drawer = true">
+            <svg-icon name="settings" :size="14" style="margin-right:5px;vertical-align:-2px" />设置
+          </el-button>
+        </div>
+      </el-header>
+
+      <!-- ============ Main ============ -->
+      <el-main class="main">
+
+        <!-- ---------- 工作台 ---------- -->
+        <section v-if="activeMenu==='dashboard'" class="view">
+          <el-row :gutter="14" class="mb18">
+            <el-col :span="6">
+              <div class="card stat">
+                <div class="stat-ic" style="background:linear-gradient(135deg,#2563eb,#3b82f6)"><svg-icon name="book" :size="22"/></div>
+                <div><div class="num">{{ stats.sources.length }}</div><div class="lbl">知识文档</div><div class="sub">含上传文档</div></div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="card stat">
+                <div class="stat-ic" style="background:linear-gradient(135deg,#6366f1,#818cf8)"><svg-icon name="layers" :size="22"/></div>
+                <div><div class="num">{{ stats.topK }}</div><div class="lbl">召回 TOP-K</div><div class="sub">单次检索条数</div></div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="card stat">
+                <div class="stat-ic" style="background:linear-gradient(135deg,#10b981,#34d399)"><svg-icon name="target" :size="22"/></div>
+                <div><div class="num">{{ fmtPct(stats.similarityThreshold) }}</div><div class="lbl">相似度阈值</div><div class="sub">低于此值过滤</div></div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="card stat">
+                <div class="stat-ic" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)"><svg-icon name="chat" :size="22"/></div>
+                <div><div class="num">{{ stats.maxMessages }}</div><div class="lbl">记忆窗口</div><div class="sub">多轮上下文条数</div></div>
+              </div>
+            </el-col>
+          </el-row>
+
+          <el-row :gutter="14">
+            <el-col :span="14">
+              <div class="card mb14">
+                <div class="card-hd"><h3><svg-icon name="db" :size="16"/> 运行状态</h3><span class="hint">实时</span></div>
+                <div class="card-bd" style="padding-top:6px">
+                  <div class="kv"><span class="k">后端服务</span><span class="v">
+                    <el-tag size="small" :type="health.ok?'success':'danger'" effect="light">{{ health.ok?'正常':'未连接' }}</el-tag></span></div>
+                  <div class="kv"><span class="k">知识库</span><span class="v">
+                    <el-tag size="small" :type="stats.loaded?'success':'warning'" effect="light">{{ stats.loaded?'已加载':'未加载' }}</el-tag></span></div>
+                  <div class="kv"><span class="k">向量库持久化</span><span class="v">
+                    <el-tag size="small" :type="stats.vectorStorePersisted?'success':'info'" effect="light">{{ stats.vectorStorePersisted?'已落盘':'未落盘' }}</el-tag></span></div>
+                  <div class="kv"><span class="k">向量库路径</span><span class="v mono">{{ stats.vectorStorePath }}</span></div>
+                  <div class="kv"><span class="k">会话标识</span><span class="v mono">{{ currentSession() }}</span></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-hd"><h3><svg-icon name="bolt" :size="16"/> 快捷操作</h3></div>
+                <div class="card-bd" style="display:flex;gap:10px;flex-wrap:wrap">
+                  <el-button type="primary" @click="activeMenu='chat'">
+                    <svg-icon name="chat" :size="14" style="margin-right:5px;vertical-align:-2px" />发起问答
+                  </el-button>
+                  <el-button @click="loadKnowledge(true)">
+                    <svg-icon name="refresh" :size="14" style="margin-right:5px;vertical-align:-2px" />强制重载知识库
+                  </el-button>
+                  <el-button @click="activeMenu='search'">
+                    <svg-icon name="search" :size="14" style="margin-right:5px;vertical-align:-2px" />检索调试
+                  </el-button>
+                </div>
+              </div>
+            </el-col>
+
+            <el-col :span="10">
+              <div class="card" style="height:100%">
+                <div class="card-hd"><h3><svg-icon name="book" :size="16"/> 知识来源</h3><span class="hint">{{ stats.sources.length }} 项 · 已入库 {{ stats.loadedSources.length }}</span></div>
+                <div class="card-bd" style="padding-top:14px">
+                  <div v-if="!stats.sources.length" class="empty" style="padding:24px 0">
+                    <svg-icon name="book" :size="30"></svg-icon>
+                    <h4>暂无知识文档</h4><p>可上传文档，或在 application.yml 的 app.rag.documents 中配置</p>
+                  </div>
+                  <div v-for="s in stats.sources" :key="s.name" class="doc-item">
+                    <div style="min-width:0">
+                      <div class="doc-name"><svg-icon :name="iconOf(s.name)" :size="15"></svg-icon> {{ s.name }}</div>
+                      <div class="doc-meta">
+                        <el-tag size="small" :type="s.loaded?'success':'info'" effect="light"
+                                style="margin-right:6px">{{ s.loaded ? '已入库' : '待加载' }}</el-tag>
+                        {{ s.origin }} · {{ fmtSize(s.size) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </section>
+
+        <!-- ---------- 智能问答 ---------- -->
+        <section v-else-if="activeMenu==='chat'" class="view">
+          <div class="card chat-wrap">
+            <div class="chat-scroll" ref="chatScroll">
+              <div v-if="!chat.messages.length" class="empty">
+                <div style="color:#2563eb;display:flex;justify-content:center"><svg-icon name="sparkle" :size="34"></svg-icon></div>
+                <h4>企业知识智能问答</h4>
+                <p>基于 RAG 检索增强生成，答案严格来自企业知识库</p>
+                <div class="suggest">
+                  <span v-for="q in suggestions" :key="q" class="chip" @click="ask(q)">{{ q }}</span>
+                </div>
+              </div>
+
+              <div v-for="(m,i) in chat.messages" :key="i" class="msg" :class="m.role==='user'?'me':''">
+                <div class="msg-av" :class="m.role==='user'?'me':'ai'">{{ m.role==='user'?'我':'AI' }}</div>
+                <div class="msg-body">
+                  <div class="bubble">
+                    <span v-if="m.loading && !m.content" class="typing"><i></i><i></i><i></i></span>
+                    <span v-else v-html="renderMd(m.content)"></span>
+                  </div>
+                  <div v-if="m.sources && m.sources.length" class="refs">
+                    <div class="refs-t"><svg-icon name="book" :size="13"/> 参考来源 · {{ m.sources.length }} 条</div>
+                    <div v-for="(s,si) in m.sources" :key="si" class="ref">
+                      <div class="ref-h">
+                        <span class="ref-src"><svg-icon name="file" :size="12"/> {{ s.source }}</span>
+                        <el-tag size="small" effect="plain" type="primary">相关度 {{ fmtPct(s.score) }}</el-tag>
+                      </div>
+                      <div class="ref-txt">{{ s.snippet }}</div>
+                    </div>
+                  </div>
+                  <div class="msg-time">{{ m.time }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="composer">
+              <div class="composer-inner">
+                <el-input v-model="chat.input" type="textarea" :autosize="{minRows:2,maxRows:5}"
+                          resize="none" placeholder="输入问题，Enter 发送 / Shift+Enter 换行"
+                          @keydown.enter.exact.prevent="send"></el-input>
+                <el-button type="primary" :loading="chat.loading" @click="send"
+                           style="height:auto;padding:14px 22px;border-radius:11px">
+                  <svg-icon name="send" :size="15" style="margin-right:5px;vertical-align:-2px" />发送
+                </el-button>
+              </div>
+              <div class="composer-ops">
+                <el-checkbox v-model="settings.stream" size="small">流式输出</el-checkbox>
+                <el-checkbox v-model="settings.showSources" size="small">显示引用来源</el-checkbox>
+                <span>会话：</span>
+                <el-input v-model="settings.sessionId" size="small" style="width:170px" placeholder="default-001"></el-input>
+                <el-button link type="danger" size="small" @click="clearChat">清空会话</el-button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- 知识库管理 ---------- -->
+        <section v-else-if="activeMenu==='knowledge'" class="view">
+          <el-alert v-if="!stats.loaded" type="warning" show-icon :closable="false" class="mb14"
+                    title="知识库尚未加载" description="请点击「加载知识库」，或确认已配置 DASHSCOPE_API_KEY 后重启应用。"></el-alert>
+
+          <div class="card mb14">
+            <div class="card-hd">
+              <h3><svg-icon name="upload" :size="16"/> 上传新知识</h3>
+              <span class="hint">txt / md / pdf / doc / docx / xlsx / pptx</span>
+            </div>
+            <div class="card-bd">
+              <el-upload :http-request="doUpload" :show-file-list="false" multiple
+                         accept=".txt,.md,.pdf,.doc,.docx,.xlsx,.pptx,.odt,.rtf">
+                <el-button type="primary">
+                  <svg-icon name="upload" :size="15" style="margin-right:5px;vertical-align:-2px"></svg-icon>选择文档上传
+                </el-button>
+              </el-upload>
+              <div style="font-size:11.5px;color:#94a3b8;margin-top:10px;line-height:1.7">
+                上传后自动解析入库，无需改配置或重启应用<br />
+                文件保存目录：<span class="mono">{{ stats.docDir }}</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="card mb14">
+            <div class="card-hd">
+              <h3><svg-icon name="db" :size="16"/> 知识库操作</h3>
+              <div style="display:flex;gap:9px">
+                <el-button size="small" @click="loadKnowledge(false)">加载</el-button>
+                <el-button size="small" type="primary" @click="loadKnowledge(true)">强制重载</el-button>
+              </div>
+            </div>
+            <div class="card-bd">
+              <el-row :gutter="12">
+                <el-col :span="10">
+                  <div class="kv"><span class="k">加载状态</span><span class="v">{{ stats.loaded?'已加载':'未加载' }}</span></div>
+                </el-col>
+                <el-col :span="14">
+                  <div class="kv"><span class="k">持久化文件</span><span class="v mono">{{ stats.vectorStorePath }}</span></div>
+                </el-col>
+              </el-row>
+              <el-divider style="margin:16px 0"></el-divider>
+              <div style="display:flex;gap:10px;align-items:center">
+                <el-input v-model="delSource" placeholder="输入来源文件名，如 knowledge.txt" style="max-width:340px" clearable></el-input>
+                <el-popconfirm title="确认删除该来源的全部知识片段？" @confirm="deleteSource">
+                  <template #reference>
+                    <el-button type="danger" :disabled="!delSource">按来源删除</el-button>
+                  </template>
+                </el-popconfirm>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd">
+              <h3><svg-icon name="book" :size="16"></svg-icon> 全部文档</h3>
+              <span class="hint">{{ stats.sources.length }} 项 · 已入库 {{ stats.loadedSources.length }}</span>
+            </div>
+            <div class="card-bd">
+              <el-table :data="stats.sources" style="width:100%" size="large">
+                <el-table-column prop="name" label="文档名称" min-width="200">
+                  <template #default="{ row }">
+                    <span style="display:flex;align-items:center;gap:8px">
+                      <svg-icon :name="iconOf(row.name)" :size="15"></svg-icon> {{ row.name }}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="ext" label="类型" width="80">
+                  <template #default="{ row }">
+                    <el-tag size="small" effect="plain">{{ row.ext || 'txt' }}</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="origin" label="来源" width="90">
+                  <template #default="{ row }">
+                    <el-tag size="small" effect="plain" type="info">{{ row.origin }}</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="size" label="大小" width="100">
+                  <template #default="{ row }">{{ fmtSize(row.size) }}</template>
+                </el-table-column>
+                <el-table-column label="状态" width="100">
+                  <template #default="{ row }">
+                    <el-tag size="small" :type="row.loaded?'success':'info'" effect="light">
+                      {{ row.loaded ? '已入库' : '待加载' }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100" align="right">
+                  <template #default="{ row }">
+                    <el-button link type="danger" size="small" @click="delSource=row.name">删除</el-button>
+                  </template>
+                </el-table-column>
+                <template #empty><span style="color:#94a3b8;font-size:13px">暂无文档，可上传或配置后加载</span></template>
+              </el-table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- 检索调试 ---------- -->
+        <section v-else-if="activeMenu==='search'" class="view">
+          <div class="card mb14">
+            <div class="card-hd"><h3><svg-icon name="search" :size="16"/> 语义检索预览</h3>
+              <span class="hint">查看问题实际召回的知识片段</span></div>
+            <div class="card-bd">
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <el-input v-model="search.q" placeholder="输入检索关键词或问题" style="max-width:420px"
+                          clearable @keydown.enter="doSearch"></el-input>
+                <span style="font-size:12.5px;color:#94a3b8">TOP-K</span>
+                <el-slider v-model="search.topK" :min="1" :max="10" style="width:150px"></el-slider>
+                <el-tag type="primary" effect="plain" size="small">{{ search.topK }}</el-tag>
+                <el-button type="primary" :loading="search.loading" @click="doSearch">
+                  <svg-icon name="search" :size="14" style="margin-right:5px;vertical-align:-2px" />检索
+                </el-button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><h3><svg-icon name="layers" :size="16"/> 检索结果</h3>
+              <span class="hint" v-if="search.results.length">共 {{ search.results.length }} 条 · 阈值 {{ fmtPct(stats.similarityThreshold) }}</span></div>
+            <div class="card-bd">
+              <div v-if="!search.results.length && !search.loading" class="empty">
+                <svg-icon name="search" :size="30"></svg-icon><h4>暂无检索结果</h4>
+                <p>输入关键词后点击检索，可验证知识片段召回质量</p>
+              </div>
+              <div v-else>
+                <div v-for="(r,i) in search.results" :key="i" class="res">
+                  <div class="res-h">
+                    <span class="ref-src"><span class="rank">#{{ i+1 }}</span>
+                      <svg-icon name="file" :size="13"/> {{ r.source }}</span>
+                    <el-tag size="small" effect="plain" :type="scoreType(r.score)">{{ fmtPct(r.score) }}</el-tag>
+                  </div>
+                  <el-progress :percentage="Math.round(r.score*100)" :stroke-width="5"
+                               :color="scoreColor(r.score)" :show-text="false" style="margin-bottom:9px"></el-progress>
+                  <div class="res-t">{{ r.snippet }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </el-main>
+    </el-container>
+  </el-container>
+
+  <!-- ============ 设置抽屉 ============ -->
+  <el-drawer v-model="drawer" title="系统设置" size="400px">
+    <el-form label-position="top" size="default">
+      <el-form-item label="管理接口令牌 (X-Admin-Token)">
+        <el-input v-model="settings.adminToken" type="password" show-password
+                  placeholder="未配置令牌时留空" clearable></el-input>
+        <div style="font-size:11.5px;color:#94a3b8;margin-top:6px">
+          对应后端 app.rag.auth-token，留空表示开发模式不鉴权
+        </div>
+      </el-form-item>
+      <el-form-item label="接口根地址">
+        <el-input v-model="settings.apiBase" placeholder="留空表示同源，如 http://localhost:8080" clearable></el-input>
+        <div style="font-size:11.5px;color:#94a3b8;margin-top:6px">
+          页面与后端同址时请<b>留空</b>；跨域时才填写，且不要以 / 结尾
+        </div>
+      </el-form-item>
+      <el-form-item label="默认会话 ID">
+        <el-input v-model="settings.sessionId" placeholder="default-001" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-checkbox v-model="settings.stream">流式输出</el-checkbox>
+        <el-checkbox v-model="settings.showSources">显示引用来源</el-checkbox>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div style="display:flex;gap:10px">
+        <el-button style="flex:1" @click="drawer=false">取消</el-button>
+        <el-button style="flex:1" type="primary" @click="saveSettings">保存</el-button>
+      </div>
+    </template>
+  </el-drawer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-plus@2/dist/index.full.min.js"></script>
+<script>
+const ICONS = {
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  db:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  layers:'<path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  bolt:'<path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/>',
+  sparkle:'<path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>',
+  refresh:'<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H10a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V10a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',
+};
+
+const { createApp, ref, reactive, computed, onMounted, nextTick } = Vue;
+
+/* Element Plus 消息提示：兼容 CDN 全量包的暴露方式，缺失时降级为 alert */
+const ElMessage = (ElementPlus && ElementPlus.ElMessage) || {
+  success:(m)=>console.log('[success]', m),
+  error:(m)=>console.log('[error]', m),
+  warning:(m)=>console.log('[warning]', m)
+};
+
+const SvgIcon = {
+  props:{ name:{type:String,default:''}, size:{type:[Number,String],default:18} },
+  computed:{ d(){ return ICONS[this.name] || ''; } },
+  /* 外层用 span 包裹并暴露 slot：
+     in-DOM 模板中 <svg-icon ... /> 自闭合无效，后续兄弟节点会被浏览器吞成其子节点，
+     通过 slot 将这些内容原样渲染出来，避免图标后面的文字丢失 */
+  template:`<span class="svg-ic" style="display:inline-flex;align-items:center;gap:6px"><svg :width="size" :height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none" v-html="d"></svg><slot></slot></span>`
+};
+
+createApp({
+  setup(){
+    // 持久化设置
+    const saved = (()=>{ try{ return JSON.parse(localStorage.getItem('kb_settings')||'{}'); }catch(e){ return {}; } })();
+    const settings = reactive(Object.assign(
+      { apiBase:'', adminToken:'', stream:true, showSources:true, sessionId:'default-001' }, saved
+    ));
+
+    const activeMenu = ref('dashboard');
+    const loading = ref(false);
+    const drawer = ref(false);
+    const delSource = ref('');
+    const chatScroll = ref(null);
+
+    const health = reactive({ ok:false });
+    const stats = reactive({
+      loaded:false, documents:[], topK:4, similarityThreshold:0.5,
+      maxMessages:10, docDir:'-', sources:[], loadedSources:[], vectorStorePath:'-', vectorStorePersisted:false
+    });
+    const chat = reactive({ messages:[], input:'', loading:false });
+    const search = reactive({ q:'', topK:4, results:[], loading:false });
+
+    const suggestions = [
+      '公司的上班时间是几点到几点？','迟到会怎么处罚？',
+      '旷工是如何认定的？','请假需要提前多久申请？'
+    ];
+
+    const pageTitle = computed(()=>({
+      dashboard:'工作台', chat:'智能问答', knowledge:'知识库管理', search:'检索调试'
+    }[activeMenu.value]));
+    const pageSub = computed(()=>({
+      dashboard:'Overview', chat:'RAG Assistant', knowledge:'Knowledge Base', search:'Retrieval Debug'
+    }[activeMenu.value]));
+
+    function extOf(n){ const i=n.lastIndexOf('.'); return i<0?'txt':n.slice(i+1).toUpperCase(); }
+    function iconOf(n){ return extOf(n)==='PDF' ? 'file' : 'book'; }
+    function fmtPct(v){ return (typeof v==='number') ? (v*100).toFixed(0)+'%' : (v||'-'); }
+    function fmtSize(b){
+      const n = Number(b) || 0;
+      if (n <= 0) return '-';
+      if (n < 1024) return n + ' B';
+      if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+      return (n/1024/1024).toFixed(1) + ' MB';
+    }
+    function scoreColor(s){ return s>=0.75?'#10b981':(s>=0.6?'#2563eb':'#f59e0b'); }
+    function scoreType(s){ return s>=0.75?'success':(s>=0.6?'primary':'warning'); }
+    function now(){ return new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }
+    function currentSession(){ return settings.sessionId || 'default-001'; }
+
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+    function renderMd(t){
+      if(!t) return '';
+      let s = esc(t);
+      s = s.replace(/`([^`]+)`/g,'<code>$1</code>');
+      s = s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+      return s.replace(/\n/g,'<br/>');
+    }
+
+    // ---------- 请求封装 ----------
+    // 去掉 apiBase 末尾多余的 "/"，否则会拼出 //rag/... 导致后端路由匹配失败
+    function url(p){
+      const base = (settings.apiBase || '').trim().replace(/\/+$/, '');
+      return base + p;
+    }
+    async function req(path, opts){
+      const headers = Object.assign({}, opts.headers||{});
+      if(settings.adminToken) headers['X-Admin-Token'] = settings.adminToken;
+      const res = await fetch(url(path), Object.assign({}, opts, { headers }));
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('接口返回了页面而非 JSON，请检查「接口根地址」是否正确（同源访问请留空）');
+      }
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+    function qs(p){ return p ? '?' + new URLSearchParams(p).toString() : ''; }
+    async function apiGet(path, params){
+      const r = await req(path + qs(params), { method:'GET' });
+      if(r.code !== 0) throw new Error(r.message || '请求失败');
+      return r.data;
+    }
+    async function apiSend(path, params, method){
+      const r = await req(path + qs(params), { method });
+      if(r.code !== 0) throw new Error(r.message || '请求失败');
+      return r.data;
+    }
+
+    // ---------- 数据加载 ----------
+    async function fetchHealth(){
+      try{
+        const r = await fetch(url('/actuator/health'));
+        health.ok = r.ok;
+      }catch(e){ health.ok = false; }
+    }
+    async function fetchStats(){
+      try{ Object.assign(stats, await apiGet('/rag/admin/knowledge/stats')); }
+      catch(e){ /* 保持默认 */ }
+    }
+    async function refreshAll(){
+      loading.value = true;
+      await Promise.all([fetchHealth(), fetchStats()]);
+      loading.value = false;
+      ElMessage.success('数据已刷新');
+    }
+
+    // ---------- 知识库操作 ----------
+    async function loadKnowledge(force){
+      try{
+        const d = await apiSend('/rag/admin/knowledge/load', { force: !!force }, 'POST');
+        await fetchStats();
+        ElMessage.success('知识库加载完成，入库 ' + (d.loadedChunks||0) + ' 个片段');
+      }catch(e){ ElMessage.error('加载失败：' + e.message); }
+    }
+    // ---------- 上传文档 ----------
+    // 自定义上传：需要携带 X-Admin-Token，且由浏览器自动设置 multipart boundary
+    async function doUpload(options){
+      const form = new FormData();
+      form.append('file', options.file);
+      try{
+        const headers = {};
+        if(settings.adminToken) headers['X-Admin-Token'] = settings.adminToken;
+        const res = await fetch(url('/rag/admin/knowledge/upload'), { method:'POST', headers, body: form });
+        const r = await res.json();
+        if(r.code !== 0) throw new Error(r.message || '上传失败');
+        ElMessage.success('已入库：' + r.data.filename + '，切分 ' + r.data.chunks + ' 个片段');
+        await fetchStats();
+      }catch(e){
+        ElMessage.error('上传失败：' + e.message);
+      }
+    }
+
+    async function deleteSource(){
+      try{
+        await apiSend('/rag/admin/knowledge', { source: delSource.value }, 'DELETE');
+        ElMessage.success('已删除来源：' + delSource.value);
+        delSource.value = '';
+      }catch(e){ ElMessage.error('删除失败：' + e.message); }
+    }
+
+    // ---------- 检索 ----------
+    async function doSearch(){
+      if(!search.q.trim()) return;
+      search.loading = true;
+      try{ search.results = await apiGet('/rag/admin/knowledge/search', { q:search.q, topK:search.topK }); }
+      catch(e){ ElMessage.error('检索失败：' + e.message); search.results = []; }
+      finally{ search.loading = false; }
+    }
+
+    // ---------- 问答 ----------
+    async function scrollBottom(){ await nextTick(); const el = chatScroll.value; if(el) el.scrollTop = el.scrollHeight; }
+
+    async function fetchSources(q){
+      try{ return await apiGet('/rag/admin/knowledge/search', { q, topK: settings.topK || stats.topK || 4 }); }
+      catch(e){ return []; }
+    }
+
+    async function streamAsk(text, onChunk){
+      const res = await fetch(url('/rag/ask/stream') + qs({ msg:text, sessionId:currentSession() }));
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const reader = res.body.getReader();
+      const dec = new TextDecoder('utf-8');
+      let buf = '';
+      for(;;){
+        const { done, value } = await reader.read();
+        if(done) break;
+        buf += dec.decode(value, { stream:true });
+        let i;
+        while((i = buf.indexOf('\n')) >= 0){
+          let line = buf.slice(0, i); buf = buf.slice(i+1);
+          line = line.replace(/\r$/,'').trim();
+          if(!line) continue;
+          if(line.startsWith('data:')) line = line.slice(5).trim();
+          onChunk(line);
+        }
+      }
+    }
+
+    async function send(){ await ask(chat.input); chat.input=''; }
+    async function ask(text){
+      const q = (text||'').trim();
+      if(!q || chat.loading) return;
+      chat.messages.push({ role:'user', content:q, time:now() });
+      const m = reactive({ role:'assistant', content:'', loading:true, sources:[], time:now(), error:false });
+      chat.messages.push(m);
+      chat.loading = true;
+      scrollBottom();
+      try{
+        if(settings.stream){
+          await streamAsk(q, c => { m.content += c; scrollBottom(); });
+        }else{
+          m.content = (await apiGet('/rag/ask', { msg:q, sessionId:currentSession() })) || '';
+        }
+        if(!m.content) m.content = '未获得有效回答，请确认知识库已加载且密钥配置正确。';
+      }catch(e){
+        m.error = true;
+        m.content = '问答失败：' + e.message;
+      }finally{
+        m.loading = false; m.time = now();
+        chat.loading = false;
+        scrollBottom();
+        if(settings.showSources && !m.error) m.sources = await fetchSources(q);
+      }
+    }
+    function clearChat(){ chat.messages = []; }
+
+    function saveSettings(){
+      localStorage.setItem('kb_settings', JSON.stringify(settings));
+      drawer.value = false;
+      ElMessage.success('设置已保存');
+      refreshAll();
+    }
+
+    onMounted(()=>{ fetchHealth(); fetchStats(); });
+
+    return {
+      activeMenu, loading, drawer, delSource, chatScroll,
+      settings, health, stats, chat, search, suggestions,
+      pageTitle, pageSub,
+      extOf, iconOf, fmtPct, fmtSize, scoreColor, scoreType, currentSession, renderMd,
+      refreshAll, loadKnowledge, deleteSource, doUpload, doSearch, send, ask, clearChat, saveSettings
+    };
+  }
+})
+.component('SvgIcon', SvgIcon)
+.use(ElementPlus)
+.mount('#app');
+</script>
+</body>
+</html>

@@ -4,20 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b56ca83c-673a-4416-85bd-04c8469e5590" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/doc/knowledge.txt" afterDir="false" />
+    <list default="true" id="b56ca83c-673a-4416-85bd-04c8469e5590" name="更改" comment="知识demo">
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/sha1-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/example/knowledge/SpringAiAlibabaDemoApplication.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/resources/main/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/KnowlledgeApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/KnowlledgeApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/conf/VectorStoreConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/conf/VectorStoreConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/controller/RagController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/controller/RagController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/rag/KnowledgeBaseLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/rag/KnowledgeBaseLoader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/KnowlledgeApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/KnowlledgeApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/VectorStoreConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/VectorStoreConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/RagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/RagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/knowledge/SpringAiAlibabaDemoApplicationTests.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,61 +80,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.5597919201906951" />
-      <entry key="MS500" value="3.2941500269065735" />
-      <entry key="S2" value="5.537250844671795" />
-      <entry key="S5" value="7.011905903276966" />
-      <entry key="S10" value="9.576952778303912" />
-      <entry key="S30" value="17.88482462070234" />
-      <entry key="S60" value="23.146359733040594" />
-      <entry key="M2" value="29.28747990507582" />
-      <entry key="M5" value="40.26764467251239" />
-      <entry key="M10" value="48.57444440364339" />
-      <entry key="M15" value="54.37104486640021" />
-      <entry key="M30" value="72.59485884421683" />
-      <entry key="H1" value="103.91414345007944" />
-      <entry key="H2" value="138.2214343152254" />
-      <entry key="H4" value="164.9863400148886" />
-      <entry key="D1" value="194.9430447719931" />
-      <entry key="W1" value="200.96731338132227" />
+      <entry key="MS100" value="1.0196408339769036" />
+      <entry key="MS500" value="1.4556506403185707" />
+      <entry key="S2" value="1.8215953946812098" />
+      <entry key="S5" value="1.924406942553319" />
+      <entry key="S10" value="1.9614608377637224" />
+      <entry key="S30" value="1.9869849560988546" />
+      <entry key="S60" value="1.9934711652075539" />
+      <entry key="M2" value="1.9967302369285052" />
+      <entry key="M5" value="1.9986908095672469" />
+      <entry key="M10" value="1.9993451903958146" />
+      <entry key="M15" value="1.9995634126085877" />
+      <entry key="M30" value="1.9997824785713365" />
+      <entry key="H1" value="2.001165824947483" />
+      <entry key="H2" value="2.099384538140572" />
+      <entry key="H4" value="5.4297879784355505" />
+      <entry key="D1" value="104.05458864887767" />
+      <entry key="W1" value="186.75403787828296" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
       <entry key="S2" value="0.0" />
-      <entry key="S5" value="4.0898833E-317" />
-      <entry key="S10" value="6.891132662114761E-159" />
-      <entry key="S30" value="2.656655837975929E-53" />
-      <entry key="S60" value="7.138839365818906E-27" />
-      <entry key="M2" value="1.1884457741479304E-13" />
-      <entry key="M5" value="1.0233879441984925E-5" />
-      <entry key="M10" value="0.004523139854383101" />
-      <entry key="M15" value="0.03445737546327056" />
-      <entry key="M30" value="0.26250979971958305" />
-      <entry key="H1" value="0.7245779511284115" />
-      <entry key="H2" value="1.2038070822508016" />
-      <entry key="H4" value="1.5516482631074855" />
-      <entry key="D1" value="1.917154824076461" />
-      <entry key="W1" value="1.987949318345541" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="1.4456985098382497E-220" />
+      <entry key="M5" value="1.7542021607172024E-88" />
+      <entry key="M10" value="1.8726632542394525E-44" />
+      <entry key="M15" value="8.88441104884731E-30" />
+      <entry key="M30" value="4.2152054279782214E-15" />
+      <entry key="H1" value="9.181670988809747E-8" />
+      <entry key="H2" value="4.285240492992926E-4" />
+      <entry key="H4" value="0.029275372694802734" />
+      <entry key="D1" value="0.9891801184312835" />
+      <entry key="W1" value="1.808634305555637" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.4795413486942366" />
-      <entry key="MS500" value="3.2369825544297792" />
-      <entry key="S2" value="5.514493929660765" />
-      <entry key="S5" value="7.001162779210488" />
-      <entry key="S10" value="9.570130943700184" />
-      <entry key="S30" value="17.88094649975266" />
-      <entry key="S60" value="23.143909649565593" />
-      <entry key="M2" value="29.285956160593614" />
-      <entry key="M5" value="40.26682899360878" />
-      <entry key="M10" value="48.57843401164168" />
-      <entry key="M15" value="54.404988305180936" />
-      <entry key="M30" value="72.8566848232457" />
-      <entry key="H1" value="104.63799392377105" />
-      <entry key="H2" value="139.42468208625556" />
-      <entry key="H4" value="166.53763721934868" />
-      <entry key="D1" value="196.86012842236534" />
-      <entry key="W1" value="202.95525217826952" />
+      <entry key="MS100" value="0.9911079577471219" />
+      <entry key="MS500" value="1.4444711335699705" />
+      <entry key="S2" value="1.8176513639608565" />
+      <entry key="S5" value="1.9226999476048712" />
+      <entry key="S10" value="1.9605840138876538" />
+      <entry key="S30" value="1.9866873243309855" />
+      <entry key="S60" value="1.993321668572225" />
+      <entry key="M2" value="1.9966553175797221" />
+      <entry key="M5" value="1.9986608006718982" />
+      <entry key="M10" value="1.9993301790797857" />
+      <entry key="M15" value="1.9995534035375968" />
+      <entry key="M30" value="1.999777473268359" />
+      <entry key="H1" value="2.0011634107944647" />
+      <entry key="H2" value="2.0998115511675213" />
+      <entry key="H4" value="5.459055911143428" />
+      <entry key="D1" value="105.04373179250663" />
+      <entry key="W1" value="188.5626625691595" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -222,6 +233,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="知识demo" />
+    <option name="LAST_COMMIT_MESSAGE" value="知识demo" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

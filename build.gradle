@@ -23,12 +23,15 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
 	implementation 'org.springframework.ai:spring-ai-pdf-document-reader'
+	// 支持 Word(doc/docx)、Excel(xlsx)、PPT(pptx) 等办公文档解析
+	implementation 'org.springframework.ai:spring-ai-tika-document-reader'
 	implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testCompileOnly 'org.projectlombok:lombok'
@@ -40,6 +43,13 @@ dependencyManagement {
 	imports {
 		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
 	}
+}
+
+tasks.named('bootJar') {
+	// .gitignore 只防止提交到仓库，不阻止打包。
+	// 本地密钥文件仅供本地开发，必须排除在发布产物之外。
+	exclude 'application-local.yml'
+	exclude 'application-local.properties'
 }
 
 tasks.named('test') {

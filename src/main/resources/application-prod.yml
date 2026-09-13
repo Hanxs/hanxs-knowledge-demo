@@ -1,0 +1,20 @@
+# 生产环境：收敛管理端点细节，关闭接口文档，降低日志级别
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    com.example.knowledge: INFO
+    org.springframework.ai: WARN
