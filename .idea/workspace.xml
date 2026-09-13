@@ -5,9 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b56ca83c-673a-4416-85bd-04c8469e5590" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/doc/knowledge.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/KnowlledgeApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/KnowlledgeApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/com/example/knowledge/SpringAiAlibabaDemoApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/resources/main/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/KnowlledgeApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/KnowlledgeApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,12 +45,13 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="hanxs-knowledge-demo" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="hanxs-knowledge-demo" type="f1a62948:ProjectNode" />
                 <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="compileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
               </path>
             </expand>
             <select />
@@ -58,61 +69,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.6629703583731543" />
-      <entry key="MS500" value="2.54568465979907" />
-      <entry key="S2" value="3.6949804017939587" />
-      <entry key="S5" value="6.8969606211351255" />
-      <entry key="S10" value="11.4451715679496" />
-      <entry key="S30" value="19.606171182439976" />
-      <entry key="S60" value="23.241526251754937" />
-      <entry key="M2" value="25.459010422200368" />
-      <entry key="M5" value="27.189949781476912" />
-      <entry key="M10" value="29.310708952535595" />
-      <entry key="M15" value="32.81029210027325" />
-      <entry key="M30" value="49.18082599723531" />
-      <entry key="H1" value="79.30978577695618" />
-      <entry key="H2" value="112.06708440784047" />
-      <entry key="H4" value="137.3546378372706" />
-      <entry key="D1" value="165.42052073741456" />
-      <entry key="W1" value="171.03789630473085" />
+      <entry key="MS100" value="1.5597919201906951" />
+      <entry key="MS500" value="3.2941500269065735" />
+      <entry key="S2" value="5.537250844671795" />
+      <entry key="S5" value="7.011905903276966" />
+      <entry key="S10" value="9.576952778303912" />
+      <entry key="S30" value="17.88482462070234" />
+      <entry key="S60" value="23.146359733040594" />
+      <entry key="M2" value="29.28747990507582" />
+      <entry key="M5" value="40.26764467251239" />
+      <entry key="M10" value="48.57444440364339" />
+      <entry key="M15" value="54.37104486640021" />
+      <entry key="M30" value="72.59485884421683" />
+      <entry key="H1" value="103.91414345007944" />
+      <entry key="H2" value="138.2214343152254" />
+      <entry key="H4" value="164.9863400148886" />
+      <entry key="D1" value="194.9430447719931" />
+      <entry key="W1" value="200.96731338132227" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
       <entry key="MS500" value="0.0" />
       <entry key="S2" value="0.0" />
-      <entry key="S5" value="1.0657295070187232E-295" />
-      <entry key="S10" value="3.5176991143167344E-148" />
-      <entry key="S30" value="9.855030878719707E-50" />
-      <entry key="S60" value="4.34799420188893E-25" />
-      <entry key="M2" value="9.274917258382257E-13" />
-      <entry key="M5" value="2.3279441980076173E-5" />
-      <entry key="M10" value="0.006821912596919103" />
-      <entry key="M15" value="0.045316839993452186" />
-      <entry key="M30" value="0.30104695040992085" />
-      <entry key="H1" value="0.775942375600852" />
-      <entry key="H2" value="1.2457447682142757" />
-      <entry key="H4" value="1.578444690353659" />
-      <entry key="D1" value="1.9226336313319976" />
-      <entry key="W1" value="1.9887599150057442" />
+      <entry key="S5" value="4.0898833E-317" />
+      <entry key="S10" value="6.891132662114761E-159" />
+      <entry key="S30" value="2.656655837975929E-53" />
+      <entry key="S60" value="7.138839365818906E-27" />
+      <entry key="M2" value="1.1884457741479304E-13" />
+      <entry key="M5" value="1.0233879441984925E-5" />
+      <entry key="M10" value="0.004523139854383101" />
+      <entry key="M15" value="0.03445737546327056" />
+      <entry key="M30" value="0.26250979971958305" />
+      <entry key="H1" value="0.7245779511284115" />
+      <entry key="H2" value="1.2038070822508016" />
+      <entry key="H4" value="1.5516482631074855" />
+      <entry key="D1" value="1.917154824076461" />
+      <entry key="W1" value="1.987949318345541" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.5938033261572304" />
-      <entry key="MS500" value="2.526229826600414" />
-      <entry key="S2" value="3.687713564408397" />
-      <entry key="S5" value="6.890699171681752" />
-      <entry key="S10" value="11.43937636053651" />
-      <entry key="S30" value="19.602518140930858" />
-      <entry key="S60" value="23.239303096450662" />
-      <entry key="M2" value="25.45777660916258" />
-      <entry key="M5" value="27.18943852955581" />
-      <entry key="M10" value="29.31718396275754" />
-      <entry key="M15" value="32.855201574537865" />
-      <entry key="M30" value="49.481206892069814" />
-      <entry key="H1" value="80.08500452260077" />
-      <entry key="H2" value="113.31227721693436" />
-      <entry key="H4" value="138.9327386121635" />
-      <entry key="D1" value="167.34308516350467" />
-      <entry key="W1" value="173.02664600360657" />
+      <entry key="MS100" value="1.4795413486942366" />
+      <entry key="MS500" value="3.2369825544297792" />
+      <entry key="S2" value="5.514493929660765" />
+      <entry key="S5" value="7.001162779210488" />
+      <entry key="S10" value="9.570130943700184" />
+      <entry key="S30" value="17.88094649975266" />
+      <entry key="S60" value="23.143909649565593" />
+      <entry key="M2" value="29.285956160593614" />
+      <entry key="M5" value="40.26682899360878" />
+      <entry key="M10" value="48.57843401164168" />
+      <entry key="M15" value="54.404988305180936" />
+      <entry key="M30" value="72.8566848232457" />
+      <entry key="H1" value="104.63799392377105" />
+      <entry key="H2" value="139.42468208625556" />
+      <entry key="H4" value="166.53763721934868" />
+      <entry key="D1" value="196.86012842236534" />
+      <entry key="W1" value="202.95525217826952" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -120,47 +131,50 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3JDil18NEYq3tIpEUzpdma3YN6y" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Gradle.hanxs-knowledge-demo [:com.example.knowledge.SpringAiAlibabaDemoApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.hanxs-knowledge-demo [:com.example.spring_ai_alibaba_demo.SpringAiAlibabaDemoApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.构建 hanxs-knowledge-demo.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/hanxs/git/hanxs-knowledge-demo&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;应用程序.SpringAiAlibabaDemoApplication.executor&quot;: &quot;Run&quot;,
-    &quot;应用程序.knowledge.executor&quot;: &quot;Run&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.hanxs-knowledge-demo [:com.example.knowledge.SpringAiAlibabaDemoApplication.main()].executor": "Run",
+    "Gradle.hanxs-knowledge-demo [:com.example.spring_ai_alibaba_demo.SpringAiAlibabaDemoApplication.main()].executor": "Run",
+    "Gradle.构建 hanxs-knowledge-demo.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/hanxs/git/hanxs-knowledge-demo",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "SDK",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "应用程序.SpringAiAlibabaDemoApplication.executor": "Run",
+    "应用程序.knowledge.executor": "Run"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
-  <component name="RunManager">
+}]]></component>
+  <component name="RunManager" selected="应用程序.knowledge">
     <configuration name="knowledge" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.example.knowledge.KnowlledgeApplication" />
       <module name="hanxs-knowledge-demo.main" />
@@ -170,6 +184,14 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="KnowlledgeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="hanxs-knowledge-demo.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.knowledge.KnowlledgeApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>

@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: hanxs-knowledge-demo
+  ai:
+    openai:
+      api-key: sk-f8f8f1d1af734dd7916c94cd112fc832
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          model: qwen-plus
+      embedding:
+        options:
+          model: text-embedding-v3
