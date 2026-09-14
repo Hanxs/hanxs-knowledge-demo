@@ -14,21 +14,16 @@
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/KnowlledgeApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/KnowlledgeApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/conf/VectorStoreConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/conf/VectorStoreConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/controller/RagController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/controller/RagController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/rag/KnowledgeBaseLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/rag/KnowledgeBaseLoader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/KnowlledgeApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/KnowlledgeApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/RagProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/RagProperties.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/VectorStoreConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/VectorStoreConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/RagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/RagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/KnowledgeAdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/KnowledgeAdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/knowledge/SpringAiAlibabaDemoApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/knowledge/KnowlledgeApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/knowledge/KnowlledgeApplicationTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

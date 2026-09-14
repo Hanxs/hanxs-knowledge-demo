@@ -10,6 +10,7 @@ import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -23,6 +24,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -51,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequiredArgsConstructor
 public class KnowledgeBaseLoader {
 
-    private final SimpleVectorStore vectorStore;
+    private final VectorStore vectorStore;
     private final DocumentTransformer textSplitter;
     private final RagProperties props;
 
@@ -154,6 +156,22 @@ public class KnowledgeBaseLoader {
 
     public boolean isLoaded() {
         return loaded.get();
+    }
+
+    /**
+     * 把向量库中已存在的来源登记为"已加载"。
+     *
+     * <p>{@code loadedSources} 是内存态，应用重启后为空；而 PgVector 里的向量是持久化的，
+     * 若不登记就会在每次启动时对全部文档重新切分 + 重新调用 Embedding 接口
+     * （先按来源删除再写入，不会产生重复数据，但白白消耗配额）。
+     * 启动时从向量表回填真实来源即可让增量逻辑在持久化场景下继续成立。</p>
+     */
+    public void primeLoadedSources(Collection<String> sources) {
+        if (sources == null || sources.isEmpty()) {
+            return;
+        }
+        loadedSources.addAll(sources);
+        loaded.set(true);
     }
 
     public Set<String> getLoadedSources() {
@@ -279,13 +297,22 @@ public class KnowledgeBaseLoader {
         return (name == null || name.isBlank()) ? "unknown" : name;
     }
 
+    /**
+     * 向量库持久化。
+     * <p>PgVector 模式下数据已写入 PostgreSQL，无需额外落盘；
+     * 仅当回退到 {@link SimpleVectorStore}（内存实现）时才写 JSON 文件。</p>
+     */
     private void persist() {
+        if (!(vectorStore instanceof SimpleVectorStore simple)) {
+            log.debug("当前向量库为 {}，数据已持久化，跳过 JSON 落盘", vectorStore.getClass().getSimpleName());
+            return;
+        }
         try {
             File file = Path.of(props.getVectorStorePath()).toAbsolutePath().normalize().toFile();
             if (file.getParentFile() != null) {
                 file.getParentFile().mkdirs();
             }
-            vectorStore.save(file);
+            simple.save(file);
             log.info("向量库已持久化到 {}", file.getAbsolutePath());
         } catch (Exception e) {
             log.warn("向量库持久化失败: {}", e.getMessage());

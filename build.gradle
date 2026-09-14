@@ -29,6 +29,9 @@ dependencies {
 	// 支持 Word(doc/docx)、Excel(xlsx)、PPT(pptx) 等办公文档解析
 	implementation 'org.springframework.ai:spring-ai-tika-document-reader'
 	implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+	// 向量库：PgVector（PostgreSQL + pgvector 扩展），生产级持久化替代 SimpleVectorStore
+	// starter 内部传递依赖 spring-ai-pgvector-store / spring-jdbc / postgresql 驱动
+	implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

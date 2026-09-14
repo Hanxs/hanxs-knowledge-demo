@@ -3,11 +3,13 @@ package com.example.knowledge.controller;
 import com.example.knowledge.common.ApiResponse;
 import com.example.knowledge.conf.RagProperties;
 import com.example.knowledge.rag.KnowledgeBaseLoader;
+import com.example.knowledge.rag.VectorStoreMigrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,8 +38,12 @@ import java.util.Optional;
 public class KnowledgeAdminController {
 
     private final KnowledgeBaseLoader loader;
-    private final SimpleVectorStore vectorStore;
+    private final VectorStore vectorStore;
+    private final VectorStoreMigrationService migrationService;
     private final RagProperties props;
+
+    @Value("${spring.ai.vectorstore.type:pgvector}")
+    private String vectorStoreType;
 
     /**
      * 加载/重载知识库。force=true 时强制重载。
@@ -113,17 +120,31 @@ public class KnowledgeAdminController {
     @GetMapping("/stats")
     public ApiResponse<Map<String, Object>> stats() {
         File file = new File(props.getVectorStorePath());
-        return ApiResponse.ok(Map.of(
-                "loaded", loader.isLoaded(),
-                "documents", props.getDocuments().stream().map(Resource::getFilename).toList(),
-                "topK", props.getTopK(),
-                "similarityThreshold", props.getSimilarityThreshold(),
-                "maxMessages", props.getMaxMessages(),
-                "docDir", Path.of(props.getDocDir()).toAbsolutePath().normalize().toString(),
-                "sources", loader.listSources(),
-                "loadedSources", loader.getLoadedSources(),
-                "vectorStorePath", file.getAbsolutePath(),
-                "vectorStorePersisted", file.exists()));
+        Map<String, Object> stat = new LinkedHashMap<>();
+        stat.put("vectorStoreType", vectorStoreType);
+        stat.put("vectorStoreClass", vectorStore.getClass().getSimpleName());
+        stat.put("vectorStoreTable", migrationService.qualifiedTable());
+        stat.put("vectorCount", migrationService.countVectors());
+        stat.put("loaded", loader.isLoaded());
+        stat.put("documents", props.getDocuments().stream().map(Resource::getFilename).toList());
+        stat.put("topK", props.getTopK());
+        stat.put("similarityThreshold", props.getSimilarityThreshold());
+        stat.put("maxMessages", props.getMaxMessages());
+        stat.put("docDir", Path.of(props.getDocDir()).toAbsolutePath().normalize().toString());
+        stat.put("sources", loader.listSources());
+        stat.put("loadedSources", loader.getLoadedSources());
+        stat.put("legacyVectorStorePath", file.getAbsolutePath());
+        stat.put("legacyVectorStoreExists", file.exists());
+        return ApiResponse.ok(stat);
+    }
+
+    /**
+     * 一次性迁移：把旧 SimpleVectorStore 的 JSON 快照导入 PgVector 向量表。
+     * 幂等，可重复调用（主键冲突的记录会被跳过）。
+     */
+    @PostMapping("/migrate")
+    public ApiResponse<Map<String, Object>> migrate() {
+        return ApiResponse.ok(migrationService.migrate());
     }
 
     private Map<String, Object> toView(Document doc) {

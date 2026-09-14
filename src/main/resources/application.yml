@@ -8,6 +8,17 @@ spring:
     # local 为"本地私人覆盖"profile：若存在 application-local.yml（已 gitignore）则自动生效，
     # 不存在也不影响启动。这样配置密钥无需设置任何环境变量。
     active: ${SPRING_PROFILES_ACTIVE:dev,local}
+  # ==================== 数据源：PostgreSQL（PgVector 向量库） ====================
+  # 需要 PostgreSQL 15+ 并启用 pgvector 扩展；连接信息可用环境变量覆盖
+  datasource:
+    url: ${PG_URL:jdbc:postgresql://localhost:5432/knowledge_db}
+    username: ${PG_USERNAME:postgres}
+    password: ${PG_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      pool-name: knowledge-pgvector-pool
   ai:
     openai:
       # 密钥通过环境变量注入，切勿再明文写入仓库
@@ -20,21 +31,59 @@ spring:
       embedding:
         options:
           model: ${EMBEDDING_MODEL:text-embedding-v3}
+    # ==================== 向量库 ====================
+    vectorstore:
+      # 向量库实现开关（Spring AI 标准属性）：
+      #   pgvector —— PostgreSQL 持久化向量库（默认，生产使用）
+      #   simple   —— 内存向量库 + JSON 文件持久化（离线/应急/单元测试）
+      type: ${VECTOR_STORE_TYPE:pgvector}
+      pgvector:
+        # ⚠️ 维度必须与 Embedding 模型输出一致：text-embedding-v3 默认输出 1024 维
+        #    （不是 1536；1536 是 OpenAI text-embedding-3-small 的维度，写错会报维度不匹配）
+        dimensions: ${PGVECTOR_DIMENSIONS:1024}
+        # 向量表所在 schema 与表名（属性名是 schema-name，不是 schema）
+        schema-name: ${PGVECTOR_SCHEMA:public}
+        table-name: ${PGVECTOR_TABLE:vector_store}
+        # 索引类型：HNSW（默认，检索快、无需预训练）或 IVFFlat
+        index-type: HNSW
+        # 距离度量：COSINE_DISTANCE / EUCLIDEAN_DISTANCE / NEGATIVE_INNER_PRODUCT
+        distance-type: COSINE_DISTANCE
+        # 启动时自动建表 + 建索引（并自动 CREATE EXTENSION vector/hstore/uuid-ossp）
+        initialize-schema: ${PGVECTOR_INIT_SCHEMA:true}
+        # 启动时校验已有表结构与维度是否匹配，不一致会直接报错，避免"写进去查不出来"
+        schema-validation: ${PGVECTOR_SCHEMA_VALIDATION:true}
+        # 单批写入上限，防止大文档一次性提交导致 PG 参数溢出
+        max-document-batch-size: 10000
 
 app:
   rag:
     # 管理接口令牌：为空表示开发模式（不鉴权）；生产环境务必配置
     auth-token: ${RAG_ADMIN_TOKEN:}
-    # 应用启动时自动加载知识库
+    # 应用启动时自动加载知识库（增量：仅加载向量库中尚不存在的来源）
     load-on-startup: true
+    # 启动时从向量表回填"已加载来源"，避免持久化向量库场景下每次重启都重复向量化
+    sync-loaded-sources: true
     # 检索参数调优
     top-k: 4
     similarity-threshold: 0.5
     # 对话记忆窗口大小
     max-messages: 10
-    # 向量库 / 对话记忆持久化文件
+    # 旧版 SimpleVectorStore 的 JSON 持久化文件。
+    # pgvector 模式下向量已落库，该文件仅作为一次性迁移的数据源；
+    # simple 模式下仍是向量库的持久化文件。
     vector-store-path: ${VECTOR_STORE_PATH:./data/vector-store.json}
     chat-memory-path: ${CHAT_MEMORY_PATH:./data/chat-memory.json}
+    # ==================== 一次性数据迁移：SimpleVectorStore JSON -> PgVector ====================
+    # 启动时执行（也可调用 POST /rag/admin/knowledge/migrate 手动触发）
+    # 命令行开启示例：java -jar app.jar --app.rag.migrate.enabled=true
+    migrate:
+      enabled: ${RAG_MIGRATE_ENABLED:false}
+      # 向量表非空时跳过，避免重复导入
+      skip-if-not-empty: true
+      # 迁移数据源文件，留空则复用 app.rag.vector-store-path
+      source-file: ${RAG_MIGRATE_SOURCE:}
+      # 是否保留旧 JSON 文件（false=迁移成功后重命名备份为 .bak）
+      keep-source-file: true
     # 系统提示词
     system-prompt: |
       你是一名企业知识库助手。请严格依据检索到的知识片段回答问题；
