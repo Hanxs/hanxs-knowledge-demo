@@ -77,6 +77,13 @@ public class KnowledgeBaseLoader {
         return loadAll(false);
     }
 
+    /**
+     * 加载全部知识文档（配置声明 + 文档目录自动发现，按文件名去重）。
+     * <p>方法加 synchronized：入库涉及"先删后写"，并发触发会互相清掉对方的数据。</p>
+     *
+     * @param force false=增量（跳过已加载来源）；true=全量重载
+     * @return 本次入库的片段总数
+     */
     public synchronized int loadAll(boolean force) {
         int total = 0;
         for (Resource resource : allResources()) {
@@ -145,6 +152,13 @@ public class KnowledgeBaseLoader {
         return chunks;
     }
 
+    /**
+     * 把一段纯文本直接入库（用于接口动态灌数据，不需要落文件）。
+     *
+     * @param textContent 正文
+     * @param metadata    附加元数据，为空时只带切分器默认字段
+     * @return 入库的片段数
+     */
     public int loadText(String textContent, Map<String, Object> metadata) {
         Document doc = new Document(textContent, metadata == null ? new HashMap<>() : metadata);
         List<Document> chunks = textSplitter.apply(List.of(doc));
@@ -154,6 +168,11 @@ public class KnowledgeBaseLoader {
         return chunks.size();
     }
 
+    /**
+     * 知识库是否已加载过（内存态，重启后由 {@link #primeLoadedSources} 回填）。
+     *
+     * @return 已加载返回 true
+     */
     public boolean isLoaded() {
         return loaded.get();
     }
@@ -174,6 +193,11 @@ public class KnowledgeBaseLoader {
         loaded.set(true);
     }
 
+    /**
+     * 当前已入库的来源快照。
+     *
+     * @return 不可变副本，避免外部修改内部状态
+     */
     public Set<String> getLoadedSources() {
         return Set.copyOf(loadedSources);
     }

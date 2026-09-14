@@ -32,6 +32,14 @@ public class VectorStoreMigrationRunner implements ApplicationRunner {
 
     private final VectorStoreMigrationService migrationService;
 
+    /**
+     * 启动期触发一次性迁移。
+     *
+     * <p>捕获全部异常：迁移属于一次性运维动作，失败也只记录日志，
+     * 不能因此让应用起不来。修复后可通过命令行重跑或调用管理接口重试。</p>
+     *
+     * @param args 启动参数，本实现不解析
+     */
     @Override
     public void run(ApplicationArguments args) {
         log.info("检测到 app.rag.migrate.enabled=true，开始执行 SimpleVectorStore -> PgVector 一次性迁移");

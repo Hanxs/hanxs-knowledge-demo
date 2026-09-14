@@ -24,6 +24,15 @@ public class KnowledgeBaseInitializer implements ApplicationRunner {
     @Value("${spring.ai.openai.api-key:}")
     private String apiKey;
 
+    /**
+     * 启动期钩子：回填已加载来源，再做增量入库。
+     *
+     * <p>三个前置条件任一不满足就跳过：未开启 {@code load-on-startup}、未配置 API Key。
+     * 入库失败也只记录日志、不抛异常——知识库加载失败不应阻断应用启动，
+     * 事后可用 {@code POST /rag/admin/knowledge/load?force=true} 重试。</p>
+     *
+     * @param args 启动参数，本实现不解析
+     */
     @Override
     public void run(ApplicationArguments args) {
         if (!props.isLoadOnStartup()) {

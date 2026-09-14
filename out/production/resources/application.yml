@@ -68,6 +68,30 @@ app:
     similarity-threshold: 0.5
     # 对话记忆窗口大小
     max-messages: 10
+    # ==================== 混合检索：向量路 + PG 原生全文检索 + RRF 融合 ====================
+    # 需要 scripts/pgvector-init.sql 第 5 节创建的 GIN 索引
+    hybrid:
+      # 关闭后退回纯向量检索（官方 QuestionAnswerAdvisor），便于对照效果
+      enabled: ${RAG_HYBRID_ENABLED:true}
+      # 第一路：向量召回条数
+      vector-top-k: ${RAG_HYBRID_VECTOR_TOP_K:10}
+      # 第二路：PG 全文检索召回条数
+      keyword-top-k: ${RAG_HYBRID_KEYWORD_TOP_K:10}
+      # RRF 融合后最终送入大模型的上下文条数
+      final-top-k: ${RAG_HYBRID_FINAL_TOP_K:5}
+      # RRF 平滑常数：score(d) = Σ 1/(k + rank(d))，常用 60
+      rrf-k: ${RAG_HYBRID_RRF_K:60}
+      # 文本搜索配置：PG 无内置中文分词，simple 只能切英文/数字；
+      # 装了 zhparser/pg_jieba 后可改成对应配置名
+      fts-config: ${RAG_HYBRID_FTS_CONFIG:simple}
+      # 把 plainto_tsquery 的 AND 语义改写为 OR，提高召回
+      query-or-expansion: true
+      # 中文兜底：额外用 ILIKE '%query%' 子串召回（关掉则中文关键词路基本召不回）
+      substring-fallback: true
+      # 长句再按标点切词分别做子串匹配
+      substring-token-split: true
+      # 召回阶段的向量相似度阈值，<=0 表示不过滤（交给 RRF 统一排序）
+      vector-similarity-threshold: 0
     # 旧版 SimpleVectorStore 的 JSON 持久化文件。
     # pgvector 模式下向量已落库，该文件仅作为一次性迁移的数据源；
     # simple 模式下仍是向量库的持久化文件。

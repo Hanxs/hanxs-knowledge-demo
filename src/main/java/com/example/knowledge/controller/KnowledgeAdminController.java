@@ -2,12 +2,13 @@ package com.example.knowledge.controller;
 
 import com.example.knowledge.common.ApiResponse;
 import com.example.knowledge.conf.RagProperties;
+import com.example.knowledge.rag.HybridSearchService;
 import com.example.knowledge.rag.KnowledgeBaseLoader;
+import com.example.knowledge.rag.KeywordDocumentSearchService;
 import com.example.knowledge.rag.VectorStoreMigrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -23,8 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,13 +43,18 @@ public class KnowledgeAdminController {
     private final KnowledgeBaseLoader loader;
     private final VectorStore vectorStore;
     private final VectorStoreMigrationService migrationService;
+    private final HybridSearchService hybridSearchService;
+    private final KeywordDocumentSearchService keywordSearchService;
     private final RagProperties props;
 
     @Value("${spring.ai.vectorstore.type:pgvector}")
     private String vectorStoreType;
 
     /**
-     * 加载/重载知识库。force=true 时强制重载。
+     * 加载/重载知识库。
+     *
+     * @param force false=增量（只处理库中尚不存在的来源）；true=全量重载
+     * @return 本次入库的片段数与是否走了强制重载
      */
     @PostMapping("/load")
     public ApiResponse<Map<String, Object>> load(@RequestParam(defaultValue = "false") boolean force) {
@@ -56,24 +64,56 @@ public class KnowledgeAdminController {
 
     /**
      * 检索预览：查看某问题实际召回哪些知识片段，便于调参。
+     *
+     * @param q    检索词
+     * @param topK 返回条数；缺省用 {@code app.rag.top-k}
+     * @param mode vector=仅向量路 / keyword=仅关键词路 / hybrid=双路 RRF 融合（默认）
+     * @return 召回片段的分数、来源与摘要
      */
     @GetMapping("/search")
     public ApiResponse<List<Map<String, Object>>> search(@RequestParam String q,
-                                                         @RequestParam(required = false) Integer topK) {
-        SearchRequest request = SearchRequest.builder()
-                .query(q)
-                .topK(topK == null ? props.getTopK() : topK)
-                .similarityThreshold(props.getSimilarityThreshold())
-                .build();
-        List<Map<String, Object>> result = vectorStore.similaritySearch(request).stream()
-                .map(this::toView)
-                .toList();
-        return ApiResponse.ok(result);
+                                                         @RequestParam(required = false) Integer topK,
+                                                         @RequestParam(defaultValue = "hybrid") String mode) {
+        int limit = topK == null ? props.getTopK() : topK;
+        List<Document> docs = switch (mode.toLowerCase(Locale.ROOT)) {
+            case "vector" -> new ArrayList<>(hybridSearchService.searchByVector(q, limit));
+            case "keyword" -> new ArrayList<>(keywordSearchService.search(q, limit));
+            default -> new ArrayList<>(hybridSearchService.search(q, limit).documents());
+        };
+        return ApiResponse.ok(docs.stream().map(this::toView).toList());
+    }
+
+    /**
+     * 混合检索调试：返回双路各自的召回情况与 RRF 融合明细，用于排查"为什么召不回来"。
+     * GET /rag/admin/knowledge/search/hybrid?q=你的问题
+     *
+     * @param q 检索词
+     * @return 两路命中数、是否降级、以及融合后的得分与名次明细
+     */
+    @GetMapping("/search/hybrid")
+    public ApiResponse<Map<String, Object>> hybridSearch(@RequestParam String q) {
+        HybridSearchService.HybridResult result = hybridSearchService.search(q);
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("query", q);
+        body.put("hybridEnabled", props.getHybrid().isEnabled());
+        body.put("keywordAvailable", result.keywordAvailable());
+        body.put("degraded", result.degraded());
+        body.put("vectorCount", result.vectorDocs().size());
+        body.put("keywordCount", result.keywordDocs().size());
+        body.put("finalCount", result.documents().size());
+        body.put("vectorHits", result.vectorDocs().stream().map(this::toView).toList());
+        body.put("keywordHits", result.keywordDocs().stream().map(this::toView).toList());
+        body.put("fused", result.trace());
+        return ApiResponse.ok(body);
     }
 
     /**
      * 上传文档并入库。支持 txt / md / pdf / doc / docx / xlsx / pptx。
      * 文件保存在 app.rag.doc-dir 目录，后续会被自动发现，无需改配置或重启。
+     *
+     * @param file 上传的文件
+     * @return 文件名与入库片段数
+     * @throws IllegalArgumentException 文件为空、无文件名或解析不出文本时抛出
      */
     @PostMapping("/upload")
     public ApiResponse<Map<String, Object>> upload(@RequestParam("file") MultipartFile file) {
@@ -106,7 +146,10 @@ public class KnowledgeAdminController {
     }
 
     /**
-     * 按来源（文件名）删除知识片段。
+     * 按来源（文件名）删除知识片段，同时从"已加载来源"中移除，便于重新入库。
+     *
+     * @param source 来源文件名
+     * @return 被删除的来源
      */
     @DeleteMapping
     public ApiResponse<Map<String, Object>> deleteBySource(@RequestParam String source) {
@@ -115,7 +158,9 @@ public class KnowledgeAdminController {
     }
 
     /**
-     * 知识库状态。
+     * 知识库状态：向量库类型/实现类/表名/向量条数、已加载来源、切分与召回参数等。
+     *
+     * @return 状态快照
      */
     @GetMapping("/stats")
     public ApiResponse<Map<String, Object>> stats() {
@@ -141,12 +186,21 @@ public class KnowledgeAdminController {
     /**
      * 一次性迁移：把旧 SimpleVectorStore 的 JSON 快照导入 PgVector 向量表。
      * 幂等，可重复调用（主键冲突的记录会被跳过）。
+     *
+     * @return 迁移报告，见 {@link VectorStoreMigrationService#migrate()}
      */
     @PostMapping("/migrate")
     public ApiResponse<Map<String, Object>> migrate() {
         return ApiResponse.ok(migrationService.migrate());
     }
 
+    /**
+     * 把文档裁剪成接口出参：分数、来源、正文摘要。
+     * <p>正截断到 200 字，避免调试接口把整篇文档塞回浏览器。</p>
+     *
+     * @param doc 召回的文档
+     * @return 出参 Map
+     */
     private Map<String, Object> toView(Document doc) {
         String text = doc.getText() == null ? "" : doc.getText();
         return Map.of(

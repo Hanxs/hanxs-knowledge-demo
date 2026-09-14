@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b56ca83c-673a-4416-85bd-04c8469e5590" name="更改" comment="知识demo">
-      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/md5-checksums.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/checksums/sha1-checksums.bin" afterDir="false" />
+    <list default="true" id="b56ca83c-673a-4416-85bd-04c8469e5590" name="更改" comment="向量库迁移至 PgVector">
+      <change afterPath="$PROJECT_DIR$/docs/混合检索方案.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/HybridSearchAdvisor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/HybridSearchService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KeywordDocumentSearchService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/knowledge/rag/HybridSearchServiceTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.7.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -16,14 +18,19 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/conf/VectorStoreConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/conf/VectorStoreConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/controller/RagController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/com/example/knowledge/controller/RagController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/pgvector-init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/pgvector-init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/RagProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/RagProperties.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/VectorStoreConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/conf/VectorStoreConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/KnowledgeAdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/KnowledgeAdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/RagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/controller/RagController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/KnowledgeBaseLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/VectorStoreMigrationRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/VectorStoreMigrationRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/VectorStoreMigrationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/knowledge/rag/VectorStoreMigrationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/knowledge/KnowlledgeApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/knowledge/KnowlledgeApplicationTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +238,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="知识demo" />
-    <option name="LAST_COMMIT_MESSAGE" value="知识demo" />
+    <MESSAGE value="向量库迁移至 PgVector" />
+    <option name="LAST_COMMIT_MESSAGE" value="向量库迁移至 PgVector" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

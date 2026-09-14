@@ -58,6 +58,20 @@ public class VectorStoreMigrationService {
     private final String tableName;
     private final String idType;
 
+    /**
+     * 构造迁移服务。
+     *
+     * <p>表名、schema 名会被拼进 SQL，构造期即用 {@link #requireIdentifier} 做白名单校验。</p>
+     *
+     * @param jdbcTemplateProvider JDBC 模板；非 pgvector 模式下可能没有数据源，
+     *                             用 {@code ObjectProvider} 延迟取用避免启动失败
+     * @param props                应用配置，迁移参数取自 {@code app.rag.migrate.*}
+     * @param objectMapper         JSON 解析器，用于读取快照与序列化 metadata
+     * @param vectorStoreType      向量库类型，仅 pgvector 模式可迁移
+     * @param schemaName           向量表所在 schema
+     * @param tableName            向量表名
+     * @param idType               主键类型（UUID / SERIAL 等），决定插入时的占位符转型
+     */
     public VectorStoreMigrationService(ObjectProvider<JdbcTemplate> jdbcTemplateProvider,
                                        RagProperties props,
                                        ObjectMapper objectMapper,
@@ -176,16 +190,33 @@ public class VectorStoreMigrationService {
         return sources.stream().filter(StringUtils::hasText).collect(Collectors.toUnmodifiableSet());
     }
 
+    /**
+     * 限定的表名，形如 {@code public.vector_store}。
+     * <p>组成部分已在构造期通过 {@link #requireIdentifier} 校验，可直接拼进 SQL。</p>
+     *
+     * @return 限定表名
+     */
     public String qualifiedTable() {
         return schemaName + "." + tableName;
     }
 
+    /**
+     * 当前是否为 pgvector 模式。迁移、计数、来源查询都以此为准。
+     *
+     * @return 是 pgvector 模式返回 true
+     */
     public boolean isPgVectorMode() {
         return "pgvector".equalsIgnoreCase(vectorStoreType);
     }
 
     // -------------------- 内部实现 --------------------
 
+    /**
+     * 断言当前处于 pgvector 模式，否则抛出明确异常。
+     * <p>避免 {@code simple} 模式下误触发迁移、在内存库里做无意义操作。</p>
+     *
+     * @throws IllegalStateException 非 pgvector 模式时抛出
+     */
     private void assertPgVectorMode() {
         if (!isPgVectorMode()) {
             throw new IllegalStateException("当前 spring.ai.vectorstore.type=" + vectorStoreType
@@ -193,6 +224,12 @@ public class VectorStoreMigrationService {
         }
     }
 
+    /**
+     * 取 JDBC 模板，缺失时抛出可读的异常而非 NPE。
+     *
+     * @return JDBC 模板
+     * @throws IllegalStateException 容器中没有数据源时抛出
+     */
     private JdbcTemplate requireJdbcTemplate() {
         JdbcTemplate jdbc = jdbcTemplateProvider.getIfAvailable();
         if (jdbc == null) {
@@ -201,13 +238,25 @@ public class VectorStoreMigrationService {
         return jdbc;
     }
 
-    /** 迁移源文件：优先 app.rag.migrate.source-file，其次 app.rag.vector-store-path */
+    /**
+     * 定位迁移源文件：优先 {@code app.rag.migrate.source-file}，
+     * 未配置时复用 {@code app.rag.vector-store-path}（旧的 SimpleVectorStore 快照路径）。
+     *
+     * @return 源文件句柄，可能不存在（调用方需自行判断）
+     */
     private File resolveSourceFile() {
         String configured = props.getMigrate().getSourceFile();
         String path = StringUtils.hasText(configured) ? configured : props.getVectorStorePath();
         return Path.of(path).toAbsolutePath().normalize().toFile();
     }
 
+    /**
+     * 判断向量表是否存在。
+     * <p>{@code to_regclass} 在表不存在时返回 NULL 而不报错，省掉一次异常控制流。</p>
+     *
+     * @param jdbc JDBC 模板
+     * @return 表存在返回 true
+     */
     private boolean tableExists(JdbcTemplate jdbc) {
         Boolean exists = jdbc.queryForObject("SELECT to_regclass(?) IS NOT NULL", Boolean.class, qualifiedTable());
         return Boolean.TRUE.equals(exists);
@@ -278,6 +327,13 @@ public class VectorStoreMigrationService {
         }
     }
 
+    /**
+     * 把迁移源文件重命名为 {@code .bak}。
+     * <p>仅在 {@code app.rag.migrate.keep-source-file=false} 时调用；
+     * 失败只告警不中断——备份是锦上添花，不该让已完成的迁移失败。</p>
+     *
+     * @param source 迁移源文件
+     */
     private void backup(File source) {
         Path bak = source.toPath().resolveSibling(source.getName() + ".bak");
         try {
@@ -288,6 +344,14 @@ public class VectorStoreMigrationService {
         }
     }
 
+    /**
+     * 校验 SQL 标识符合法性，防止配置被注入恶意片段。
+     *
+     * @param value 待校验值
+     * @param name  配置项名，仅用于报错信息
+     * @return 校验通过的原值
+     * @throws IllegalArgumentException 值为空或不符合标识符规则时抛出
+     */
     private static String requireIdentifier(String value, String name) {
         if (!StringUtils.hasText(value) || !SAFE_IDENTIFIER.matcher(value).matches()) {
             throw new IllegalArgumentException("非法的 spring.ai.vectorstore.pgvector." + name + " 配置: " + value);
@@ -295,6 +359,19 @@ public class VectorStoreMigrationService {
         return value;
     }
 
+    /**
+     * 组装迁移结果报告，直接作为接口返回值。
+     *
+     * @param status   状态：SUCCESS / SKIPPED / FAILED
+     * @param message  面向人的结果描述
+     * @param read     从源文件读到的条数
+     * @param inserted 实际写入条数
+     * @param skipped  主键冲突跳过的条数
+     * @param invalid  缺文本或向量的无效条数
+     * @param source   迁移源文件
+     * @param total    迁移后向量表总条数
+     * @return 报告 Map
+     */
     private Map<String, Object> report(String status, String message, int read, int inserted,
                                        int skipped, int invalid, File source, long total) {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -310,7 +387,13 @@ public class VectorStoreMigrationService {
         return map;
     }
 
-    /** 解析结果 */
+    /**
+     * 源文件解析结果。
+     *
+     * @param read    读到的条目数
+     * @param invalid 缺文本或缺向量的无效条目数
+     * @param batch   待批量写入的行，每行与 {@link #insertSql} 的占位符一一对应
+     */
     private record Parsed(int read, int invalid, List<Object[]> batch) {
     }
 }

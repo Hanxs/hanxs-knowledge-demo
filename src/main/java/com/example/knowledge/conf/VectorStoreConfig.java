@@ -1,6 +1,8 @@
 package com.example.knowledge.conf;
 
 import com.example.knowledge.rag.FileChatMemoryRepository;
+import com.example.knowledge.rag.HybridSearchAdvisor;
+import com.example.knowledge.rag.HybridSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -63,6 +65,21 @@ public class VectorStoreConfig {
         return store;
     }
 
+    /**
+     * 混合检索 Advisor：向量路 + PG 原生全文检索双路召回，再用 RRF 融合取 Top-N 作为上下文。
+     * 未启用或关键词路不可用时自动降级为纯向量检索。
+     */
+    @Bean
+    public HybridSearchAdvisor hybridSearchAdvisor(HybridSearchService hybridSearchService) {
+        return new HybridSearchAdvisor(hybridSearchService);
+    }
+
+    /**
+     * 文本切分器。参数取自 {@code app.rag.splitter.*}，
+     * 切分粒度直接决定召回片段的完整性，需在检索效果与上下文长度之间权衡。
+     *
+     * @return 基于 token 的文本切分器
+     */
     @Bean
     public DocumentTransformer textSplitter() {
         RagProperties.Splitter s = props.getSplitter();
@@ -87,6 +104,16 @@ public class VectorStoreConfig {
                 .build();
     }
 
+    /**
+     * 全局 ChatClient：默认挂上会话记忆 Advisor 与系统提示词。
+     *
+     * <p>检索 Advisor 不在这里注册，而是由 {@link com.example.knowledge.controller.RagController}
+     * 按请求动态选择——混合检索与纯向量检索需要可切换。</p>
+     *
+     * @param builder    框架提供的构造器，已预置模型与观测配置
+     * @param chatMemory 会话记忆，用于多轮对话
+     * @return 配置好的 ChatClient
+     */
     @Bean
     public ChatClient chatClient(ChatClient.Builder builder, ChatMemory chatMemory) {
         ChatClient.Builder b = builder
